@@ -2,7 +2,7 @@
 
 ## Quick Notes
 
-- Mask: *Polygon* Create 3 or more points by left-clicking on the canvas, to fill the polygon, press *a* or *A*.
+- Mask - *Polygon*: Create 3 or more points by left-clicking on the canvas, to fill the polygon, press *a* or *A*.
   
 - Base Image:  The conditions will be based on this image. On the settings, you can *save* which will put the *Current Image* into *Base Image* or *Reset* which will do the opposite.
 
