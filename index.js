@@ -661,7 +661,7 @@ function updateSlider(e, wrapper, value) {
         const input = hslSlider.querySelector("input");
 
         input.addEventListener("slider", () => {
-            conditions[conditions.currentOption][hslSlider.dataset.key] = input.value;
+            conditions[conditions.currentOption][hslSlider.dataset.key] = Number(input.value);
             updateHslSlider();
         });
     });
