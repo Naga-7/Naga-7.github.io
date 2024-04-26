@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+
+<html data-theme="light" data-transition="off">
+    <head>
+        <title>Conditional Image Editor</title>
+        <link href="index.css" rel="stylesheet">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    </head>
+
+    <body>
+        <div id="main">
+            <div id="toolbar">
+                <button id="themeButton" class="icon"></button>
+
+                <div id="settingsWrapper">
+                    <button id="settings" class="icon"></button>
+
+                    <div id="settingsDropdown" data-display="none">
+                        <button id="save">Save</button>
+                        <button id="reset">Reset</button>
+                        <button id="download">Donwload</button>
+                    </div>
+                </div>
+                
+
+                <div id="maskAndEditImageWrapper">
+                    <button id="mask" data-tab="maskTab">Mask</button>
+                    <button data-selected="false" id="base">Base Image</button>
+                </div>
+
+                <div id="maskTab" data-display="none">
+                    <button class="closeButton icon"></button>
+
+                    <div id="maskSettings" class="flex">
+                        <button id="maskColor" class="flex">
+                            <span>Mask Color:</span>
+                            <div class="colorCircle"></div>
+                            <input type="color" data-display="none">
+                        </button>
+
+                        <div class="flex" id="methodWrapper">
+                            <span>Method:</span>
+                            <button id="paint">Paint</button>
+                            <button id="polygon" data-selected="false">Polygon</button>
+                        </div>
+    
+                        <div class="flex" id="actionWrapper">
+                            <span>Action:</span>
+                            <button id="draw">Draw</button>
+                            <button id="erase" data-selected="false">Erase</button>
+                        </div>
+                    </div>
+
+                    <div class="sliderWrapper flex column" id="lineWidthMaskSlider" data-min="1" data-max="500" data-initial="50">
+                        <span>Line Width</span>
+
+                        <div class="flex">
+                            <div class="slider border">
+                                <div class="thumb"></div>
+                            </div>
+
+                            <input class="sliderInput" id="maskLineWidth" value="50"></input>
+                        </div>
+                    </div>
+
+                    <div id="maskOpacityWrapper">
+                        <div class="sliderWrapper flex column" id="lineWidthMaskSlider" data-min="0" data-max="100" data-initial="100">
+                            <span>Mask Opacity</span>
+    
+                            <div class="flex">
+                                <div class="slider border">
+                                    <div class="thumb"></div>
+                                </div>
+    
+                                <input class="sliderInput" id="maskOpacity" value="100"></input>
+                            </div>
+                        </div>
+                        
+                        <div class="sliderWrapper flex column" id="lineWidthMaskSlider" data-min="0" data-max="100" data-initial="100">
+                            <span>Canvas Opacity</span>
+    
+                            <div class="flex">
+                                <div class="slider border">
+                                    <div class="thumb"></div>
+                                </div>
+    
+                                <input class="sliderInput" id="canvasOpacity" value="100"></input>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="condition">
+                    <span>Conditions</span>
+
+                    <div id="conditionButtonWrapper">
+                        <button class="flex" id="start" data-group="1">
+                            Start
+                            <div class="colorCircle"></div>
+                        </button>
+
+                        <button id="pen" data-selected="false" class="icon"></button>
+
+                        <button class="flex" id="end" data-selected="false" data-group="1">
+                            End
+                            <div class="colorCircle"></div>
+                        </button>
+                    </div>
+
+                    <div id="hsl" data-display="flex">
+                        <div class="sliderWrapper flex" data-min="0" data-max="360" data-key="h">
+                            <span>H</span>
+    
+                            <div class="slider" id="hSlider">
+                                <div class="thumb" id="hThumb"></div>
+                            </div>
+
+                            <input class="sliderInput" value="0"></input>
+                        </div>
+
+                        <div class="sliderWrapper flex" data-min="0" data-max="100" data-key="s">
+                            <span>S</span>
+    
+                            <div class="slider" id="sSlider">
+                                <div class="thumb" id="sThumb"></div>
+                            </div>
+
+                            <input class="sliderInput" value="0"></input>
+                        </div>
+
+                        <div class="sliderWrapper flex" data-min="0" data-max="100" data-key="l">
+                            <span>L</span>
+    
+                            <div class="slider" id="lSlider">
+                                <div class="thumb" id="lThumb"></div>
+                            </div>
+
+                            <input class="sliderInput" value="0"></input>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="changeHsl">
+                    <span>Change HSL</span>
+
+                    <div id="changeHslButtonWrapper">
+                        <button data-selected="false" id="rotate">Rotate Hue</button>
+                        <button id="multiply" data-group="2">Multiply</button>
+                        <button id="sum" data-selected="false" data-group="2">Sum</button>
+                    </div>
+
+                    <div id="changeHslSliderWrapper">
+                        <div class="sliderWrapper flex" id="setHue" data-min="0" data-max="360">
+                            <span>H</span>
+    
+                            <div class="slider hue">
+                                <div class="thumb"></div>
+                            </div>
+    
+                            <input class="sliderInput" id="setH" value="0"></input>
+                        </div>
+
+                        <div class="sliderWrapper flex" id="rotateHue" data-min="0" data-max="360" data-display="none">
+                            <span>H</span>
+    
+                            <div class="slider border">
+                                <div class="thumb"></div>
+                            </div>
+    
+                            <input class="sliderInput" value="0"></input>
+                        </div>
+    
+                        <div class="sliderWrapper flex" id="multiplyS" data-min="0" data-initial="100" data-max="500">
+                            <span>S</span>
+    
+                            <div class="slider border">
+                                <div class="thumb"></div>
+                            </div>
+    
+                            <input class="sliderInput" value="100"></input>
+                        </div>
+    
+                        <div class="sliderWrapper flex" id="multiplyL" data-min="0" data-initial="100" data-max="300">
+                            <span>L</span>
+    
+                            <div class="slider border">
+                                <div class="thumb"></div>
+                            </div>
+    
+                            <input class="sliderInput" value="100"></input>
+                        </div>
+
+                        <div class="sliderWrapper flex sumSlider" id="sumS" data-min="-100" data-initial="0" data-max="100"
+                        data-display="none">
+                            <span>S</span>
+    
+                            <div class="slider border">
+                                <div class="thumb"></div>
+                            </div>
+    
+                            <input class="sliderInput" value="0"></input>
+                        </div>
+    
+                        <div class="sliderWrapper flex sumSlider" id="sumL" data-min="-100" data-initial="0" data-max="100"
+                        data-display="none">
+                            <span>L</span>
+    
+                            <div class="slider border">
+                                <div class="thumb"></div>
+                            </div>
+    
+                            <input class="sliderInput" value="0"></input>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="canvasWrapper">
+                <button id="canvasWrapperButton" data-display="block">Upload an Image</button>
+                <input id="canvasWrapperInput" type="file" data-display="none">
+
+                <canvas id="canvas" data-display="none"></canvas>
+                <canvas id="canvasMask" data-display="none"></canvas>
+                <canvas id="canvasBase" data-display="none"></canvas>
+            </div>
+        </div>
+
+        <div id="canvasMaskCursor" data-display="none"></div>
+    </body>
+
+    <script src="index.js"></script>
+</html>
