@@ -169,6 +169,7 @@ input:focus {
     flex-direction: column;
     border: .1vw #aa9883 solid;
     border-color: var(--fontColor);
+    background-color: var(--toolbarColor);
 }
 
 #settingsDropdown button {
@@ -219,6 +220,10 @@ input:focus {
     gap: 1.5vw;
 }
 
+#maskSettings  div:first-child{
+    gap: 2vw;
+}
+
 #methodWrapper, #actionWrapper {
     gap: 2vw;
     width: 100%;
@@ -237,6 +242,10 @@ input:focus {
 #maskColor {
     border: none;
     gap: 1vw;
+    padding: .5vw;
+}
+
+#importMask {
     padding: .5vw;
 }
 
@@ -326,6 +335,7 @@ input:focus {
     background-repeat: no-repeat;
     width: 3vw;
     height: 3vw;
+    border: none;
 }
 
 .colorCircle {
@@ -335,6 +345,19 @@ input:focus {
     background-color: #000;
     border: .1vw #aa9883 solid;
     border-color: var(--fontColor);
+}
+
+#penValues {
+    gap: 1.5vw;
+}
+
+#penValues span {
+    border: .1vw #aa9883 solid;
+    border-color: var(--fontColor);
+    font-size: .9vw;
+    width: 3vw;
+    height: 1.5vw;
+    opacity: .5;
 }
 
 #hsl {
