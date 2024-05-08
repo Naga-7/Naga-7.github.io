@@ -17,8 +17,9 @@
 
                     <div id="settingsDropdown" data-display="none">
                         <button id="save">Save</button>
-                        <button id="reset">Reset</button>
-                        <button id="download">Donwload</button>
+                        <button id="reset">Reset Image</button>
+                        <button id="downloadResult">Download Result</button>
+                        <button id="downloadMask">Download Mask</button>
                     </div>
                 </div>
                 
@@ -32,11 +33,19 @@
                     <button class="closeButton icon"></button>
 
                     <div id="maskSettings" class="flex">
-                        <button id="maskColor" class="flex">
-                            <span>Mask Color:</span>
-                            <div class="colorCircle"></div>
-                            <input type="color" data-display="none">
-                        </button>
+                        <div class="flex">
+                            <button id="maskColor" class="flex">
+                                <span>Mask Color:</span>
+                                <div class="colorCircle"></div>
+                                <input type="color" data-display="none">
+                            </button>
+
+                            <button id="importMask">
+                                Import Mask
+                                <input type="file" data-display="none">
+                            </button>
+                        </div>
+                        
 
                         <div class="flex" id="methodWrapper">
                             <span>Method:</span>
@@ -94,17 +103,30 @@
                     <span>Conditions</span>
 
                     <div id="conditionButtonWrapper">
-                        <button class="flex" id="start" data-group="1">
+                        <button class="flex" id="start" data-group="1" data-selected="true">
                             Start
                             <div class="colorCircle"></div>
                         </button>
 
-                        <button id="pen" data-selected="false" class="icon"></button>
+                        
 
                         <button class="flex" id="end" data-selected="false" data-group="1">
                             End
                             <div class="colorCircle"></div>
                         </button>
+
+                        <div class="flex" style="font-size: .9vw;">
+                            Pen
+                            <div id="penColorCircle" class="colorCircle"></div>
+                        </div>
+                        
+                    </div>
+
+                    <div id="penValues" class="flex">
+                        <button id="pen" data-selected="false" class="icon"></button>
+                        <span class="flex">0</span>
+                        <span class="flex">0</span>
+                        <span class="flex">0</span>
                     </div>
 
                     <div id="hsl" data-display="flex">
