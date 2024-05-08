@@ -112,6 +112,7 @@ function clamp(min, value, max) {
 
     const context = canvases.main.getContext("2d");
     const baseContext = canvases.base.getContext("2d");
+    const maskContext = canvases.mask.getContext("2d");
     
     const base = document.getElementById("base");
     base.addEventListener("click", () => {
@@ -148,31 +149,38 @@ function clamp(min, value, max) {
         }
     });
 
-    const download = document.getElementById("download");
-    download.addEventListener("click", () => {
-        settingsDropdown.dataset.display =  "none";
+    const downloadKeyList = ["Result", "Mask"];
+    downloadKeyList.forEach((key) => {
+        const element = document.getElementById("download" + key);
+        const contextToDownload = key === "Result" ? context : maskContext;
 
-        const imgObj = context.getImageData(20, 20, canvases.main.width - 40, canvases.main.height - 40);
+        element.addEventListener("click", () => {
+            settingsDropdown.dataset.display =  "none";
 
-        const tmpCanvas = document.createElement("canvas");
-        [tmpCanvas.width, tmpCanvas.height] = [imgObj.width, imgObj.height];
+            const imgObj = contextToDownload.getImageData(20, 20, canvases.main.width - 40, canvases.main.height - 40);
 
-        const tmpContext = tmpCanvas.getContext("2d");
-        tmpContext.putImageData(imgObj, 0, 0);
+            const tmpCanvas = document.createElement("canvas");
+            [tmpCanvas.width, tmpCanvas.height] = [imgObj.width, imgObj.height];
 
-        tmpCanvas.toBlob((blob) => {
-            const url = URL.createObjectURL(blob);   
-    
-            const link = document.createElement("a");    
-            link.download = "canvas.png";
-            link.href = url;
-            link.click();
-    
-            URL.revokeObjectURL(url);
-            link.remove();
-            tmpCanvas.remove();
+            const tmpContext = tmpCanvas.getContext("2d");
+            tmpContext.putImageData(imgObj, 0, 0);
+
+            const name = key === "Result" ? "result.png" : "mask.png";
+
+            tmpCanvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);   
+        
+                const link = document.createElement("a");    
+                link.download = name;
+                link.href = url;
+                link.click();
+        
+                URL.revokeObjectURL(url);
+                link.remove();
+                tmpCanvas.remove();
+            });
         });
-    });
+    });  
 }
 
 // Canvas Wrapper
@@ -320,7 +328,7 @@ function clamp(min, value, max) {
         // Each click saves one stroke.
         temporaryImage = context.getImageData(0, 0, canvases.mask.width, canvases.mask.height);
         
-        context.filter = maskSettings.action === "draw" ? "" : "invert(100%)";
+        context.filter = maskSettings.action === "draw" ? "invert(0%)" : "invert(100%)";
         context.globalCompositeOperation = "source-over";
         context.lineWidth = 1;
         context.strokeStyle = maskSettings.color;
@@ -490,10 +498,39 @@ function clamp(min, value, max) {
     canvasOpacity.addEventListener("slider", (e) => {
         canvases.main.style.opacity = e.target.value / 100;
     });
+
+    // Mask Import
+    const importButton = document.getElementById("importMask");
+    const fileInput = importButton.querySelector("input");
+
+    importButton.addEventListener("click", () => {
+        fileInput.click();
+    });
+
+    fileInput.addEventListener("change", () => {
+        const file = fileInput.files[0];
+        const img = new Image();
+        const reader = new FileReader();
+    
+        reader.onload = (e) => {
+            img.src = e.target.result;
+        };
+    
+        reader.readAsDataURL(file);
+
+        img.onload = () => {
+            const margin = 20;
+
+            const maskContext = canvases.mask.getContext("2d");
+
+            maskContext.drawImage(img, margin, margin);
+        }
+    });
 }
 
 // Conditions Buttons
 {
+    const hsl = document.getElementById("hsl");
     const optionIdList = ["start", "end"];
 
     optionIdList.forEach((id) => {
@@ -501,11 +538,9 @@ function clamp(min, value, max) {
         const group = document.querySelectorAll("[data-group='1']");
 
         option.addEventListener("click", () => {
-            conditions.currentOption = id;
-
             group.forEach((element) => {
                 if (element === option) {
-                    element.dataset.selected = "true";
+                    element.dataset.selected = element.dataset.selected === "true" ? "false" : "true";
                 }
 
                 else {
@@ -513,7 +548,16 @@ function clamp(min, value, max) {
                 }
             });
 
-            updateHslSlider();
+            if (option.dataset.selected === "true") {
+                conditions.currentOption = id;
+                updateHslSlider();
+                hsl.style.pointerEvents = "";
+            }
+
+            else {
+                conditions.currentOption = null;
+                hsl.style.pointerEvents = "none";
+            }
         });
     });
 }
@@ -527,6 +571,8 @@ function clamp(min, value, max) {
     });
 
     const canvasIdList = ["canvas", "canvasBase"];
+    const penValues = document.getElementById("penValues").querySelectorAll("span");
+    const penColorCircle = document.getElementById("penColorCircle");
 
     canvasIdList.forEach((id) => {
         const canvas = document.getElementById(id);
@@ -536,20 +582,25 @@ function clamp(min, value, max) {
             if (conditions.pen) {
                 conditions.pen = false;
                 pen.dataset.selected = "false";
-    
-                conditions.pen = false;
-                pen.dataset.selected = "false";
-    
+        
                 const rgb = context.getImageData(e.layerX, e.layerY, 1, 1).data.slice(0, 3);
                 const hsl = RGBtoHSL(rgb);
+
+                penValues.forEach((element, index) => {
+                    element.textContent = hsl[index];
+                });
+
+                penColorCircle.style.backgroundColor = `hsl(${hsl[0]}, ${hsl[1]}%, ${hsl[2]}%)`
+
+                if (conditions.currentOption !== null) {
+                    conditions[conditions.currentOption] = {
+                        h: hsl[0],
+                        s: hsl[1],
+                        l: hsl[2]
+                    }
     
-                conditions[conditions.currentOption] = {
-                    h: hsl[0],
-                    s: hsl[1],
-                    l: hsl[2]
+                    updateHslSlider();
                 }
-    
-                updateHslSlider();
             }
         });
     });
@@ -661,13 +712,17 @@ function updateSlider(e, wrapper, value) {
         const input = hslSlider.querySelector("input");
 
         input.addEventListener("slider", () => {
-            conditions[conditions.currentOption][hslSlider.dataset.key] = Number(input.value);
-            updateHslSlider();
+            if (conditions.currentOption !== null) {
+                conditions[conditions.currentOption][hslSlider.dataset.key] = Number(input.value);
+                updateHslSlider();
+            }
         });
     });
 }
 
 function updateHslSlider() {
+    if (conditions.currentOption === null) return;
+
     const keyList = ["h", "s", "l"];
 
     const h = conditions[conditions.currentOption].h;
@@ -796,7 +851,6 @@ function changeHSL(option, value) {
                 continue
             }
 
-            // true
             else if (conditions.start.h >= conditions.end.h && !(hslImageData.base[i] >= conditions.start.h || hslImageData.base[i] <= conditions.end.h)) {
                 continue
             }
