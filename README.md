@@ -1,6 +1,6 @@
 # Conditional Image Editor
 
-## Live Page https://nagamoon7.github.io/
+## Live Page https://naga-7.github.io/
 
 ## Quick Notes
 
